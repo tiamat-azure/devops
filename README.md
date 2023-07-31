@@ -378,6 +378,9 @@ chmod +x ./gradlew
 # Arrêter l'application
 CTRL+C
 
+# Créer les GitHub Actions
+jhipster ci-cd
+
 # Créer le repo dans GitHub
 gh repo create jhi --public --source=. --remote=upstream
 
@@ -391,5 +394,12 @@ npm run java:docker
 # Lancer l'application et ses dépendances (base de données)
 docker-compose -f src/main/docker/app.yml up -d
 
+# Arrêter l'application et ses dépendances (base de données)
+docker-compose -f src/main/docker/app.yml stop
 
+# Supprimer l'application et ses dépendances (base de données)
+docker-compose -f src/main/docker/app.yml down
+
+# Intégrer avec k8s
+jhispter k8s
 ```
