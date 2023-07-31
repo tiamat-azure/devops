@@ -378,6 +378,18 @@ chmod +x ./gradlew
 # Arrêter l'application
 CTRL+C
 
-# Créer le repo GitHub
+# Créer le repo dans GitHub
 gh repo create jhi --public --source=. --remote=upstream
+
+# Pousser le code
+git remote add jhi https://github.com/tiamat-azure/jhi.git
+git push jhi
+
+# Conteneuriser l'application
+npm run java:docker
+
+# Lancer l'application et ses dépendances (base de données)
+docker-compose -f src/main/docker/app.yml up -d
+
+
 ```
