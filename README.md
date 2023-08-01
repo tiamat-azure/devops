@@ -285,6 +285,25 @@ minikube stop -p cluster2
 minikube delete --all
 ```
 
+## Installer kubectl (dernière version)
+
+```bash
+# Vérifier la version
+kubectl version --client
+
+# Télécharger
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+# Droit en exécution
+chmod +x kubectl
+
+# Déplacer
+sudo mv kubectl /usr/local/bin/
+
+# Vérifier la version
+kubectl version --client
+```
+
 ## Installer SDKMAN
 
 ```bash
@@ -414,6 +433,14 @@ jhispter k8s
 kubectl get po -A
 
 # (optionel) Supprimer les déploiements
-kubectl delete -f .jhi-k8s/
+kubectl delete -f jhi-k8s/
 
+# Supprimer tous les objets dans un namespace donné
+kubectl delete all --all -n kubernetes-dashboard
+
+# Supprimer tous les objets avec un label donné
+kubectl delete all -l app=jhi
+
+# Lister tous les objets dans un namespace donné
+kubectl get all -n default
 ```
