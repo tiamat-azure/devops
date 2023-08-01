@@ -443,4 +443,15 @@ kubectl delete all -l app=jhi
 
 # Lister tous les objets dans un namespace donné
 kubectl get all -n default
+
+# Pousser un déploiement
+kubectl apply -f jhi-deployment.yml
+
+# Supprimer un déploiement
+kubectl delete deployment.apps/jhi
+
+# Tester le déploiement d'une image simple dans k8s
+kubectl apply -f hello-world.yml
+
+
 ```
