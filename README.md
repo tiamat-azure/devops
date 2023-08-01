@@ -25,6 +25,8 @@ git config --global --list
 
 ## Ajouter les autorités de certification de l'entreprise (optionnel)
 
+Méthode 1
+
 ```bash
 # Copier les certificats préalablement récupérés
 sudo cp *.crt /usr/local/share/ca-certificates/
@@ -33,6 +35,18 @@ sudo cp *.crt /usr/local/share/ca-certificates/
 ls /usr/local/share/ca-certificates/
 
 # Ajouter
+sudo update-ca-certificates
+```
+
+Méthode 2
+
+```bash
+# Télécharger
+wget --no-check-certificate --http-user=$MATRICULE --ask-password -O RootCertOPT.pem "https://certificats.intranet.opt/certsrv/certnew.cer?ReqID=CACert&Renewal=0&Mode=inst&Enc=b64"
+
+# Installer
+sudo mkdir /usr/local/share/ca-certificates/rootca-opt
+sudo mv RootCertOPT.pem /usr/local/share/ca-certificates/rootca-opt/
 sudo update-ca-certificates
 ```
 
@@ -418,8 +432,11 @@ docker-compose -f src/main/docker/app.yml stop
 
 # Supprimer l'application et ses dépendances (base de données)
 docker-compose -f src/main/docker/app.yml down
+```
 
-# Intégrer avec k8s
+## Conteneuriser et déployer sur k8s
+
+```bash
 jhispter k8s
 ```
 
@@ -443,4 +460,58 @@ kubectl delete all -l app=jhi
 
 # Lister tous les objets dans un namespace donné
 kubectl get all -n default
+
+# Pousser un déploiement
+kubectl apply -f jhi-deployment.yml
+
+# Supprimer un déploiement
+kubectl delete deployment.apps/jhi
+
+# Tester le déploiement d'une image simple dans k8s
+kubectl apply -f hello-world.yml
+
+```
+
+## Créer un reverse proxy (TODO)
+
+## Se connecter sur un cluster Google/Anthos
+
+:notebook: Référence : <https://cloud.google.com/anthos/multicluster-management/gateway/using>
+
+:notebook: Référence : <https://cloud.google.com/sdk/docs/install?hl=fr>
+
+```bash
+# Installer kubectl
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+sudo mkdir /etc/apt/keyrings
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+
+# Installer gcloud
+curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-438.0.0-linux-x86_64.tar.gz
+tar -xf google-cloud-cli-438.0.0-linux-x86_64.tar.gz
+cd google-cloud-sdk/
+./install.sh 
+
+# Ajouter les CA
+gcloud config set core/custom_ca_certs_file /usr/local/share/ca-certificates/rootca-opt/RootCertOPT.pem
+
+# Se connecter à GCP
+gcloud auth login
+
+# Installer un plugin gcloud
+gcloud components install gke-gcloud-auth-plugin
+
+# Afficher tous les clusters enregistrés de vos parcs
+gcloud container fleet memberships list
+
+# Sélectionner le projet
+gcloud config set project anthos-glia-qual
+
+# Télécharger un kubeconfig pour se connecter au cluster
+gcloud container fleet memberships get-credentials glia-usercluster-qual
+
 ```

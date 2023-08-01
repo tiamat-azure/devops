@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../jhi"
+		},
+		{
+			"path": "../welcome-to-docker"
+		}
+	]
+}
