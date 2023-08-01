@@ -403,3 +403,17 @@ docker-compose -f src/main/docker/app.yml down
 # Intégrer avec k8s
 jhispter k8s
 ```
+
+![jhi-k8s](images/2.png)
+
+```bash
+# Déployer sur k8s
+./kubectl-apply.sh -f
+
+# Vérifier
+kubectl get po -A
+
+# (optionel) Supprimer les déploiements
+kubectl delete -f .jhi-k8s/
+
+```
